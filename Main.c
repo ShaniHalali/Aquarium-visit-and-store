@@ -16,7 +16,7 @@
 CentralAquarium* createOurAquarium() {
     CentralAquarium* myAquarium = initCentralAquarium("Our Aquarium");
     Dolphin* dolphin1 = createDolphin(10, 5.3, 'A');
-    Dolphin* dolphin2 = createDolphin(0, 6.1, 'B');
+    Dolphin* dolphin2 = createDolphin(10, 6.1, 'B');
     Dolphin* dolphin3 = createDolphin(0, 4.9, 'C');
     insertDolphinLinkedList(myAquarium->freshAquarium, dolphin1);
     insertDolphinLinkedList(myAquarium->freshAquarium, dolphin2);
@@ -126,13 +126,11 @@ int main(void)
             break;
         }
         case 8: {
-            printf("================BEFORE==============\n");
-            printDolphinList(aquarium->freshAquarium->dolphinLinkedList);
-            printf("================AFTER==============\n");
-            removeByFriendshipValue(aquarium->freshAquarium->dolphinLinkedList, 1);
-            printDolphinList(aquarium->freshAquarium->dolphinLinkedList);
+            removeAndPrintChangesInDolphinsList(aquarium->freshAquarium->dolphinLinkedList);
+            
             break;
         }
+
         case 9: {
             getSeaCreatureFromUser(aquarium->saltAquarium);
             break;
