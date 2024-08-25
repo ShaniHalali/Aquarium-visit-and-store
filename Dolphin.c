@@ -46,18 +46,19 @@ Dolphin* getDolphinFromUser(Dolphin* head) {
 void printDolphin(Dolphin* dolphin) {
 	PRINTALLDOLPHIND(dolphin);
 }
-
-
-int removeByFriendshipValue(Dolphin* head, int friendShipValue) {
+int removeByFriendshipValue(Dolphin** head, int friendShipValue) {
 	int removedCount = 0;
-	while (head != NULL && head->friendshipValue < friendShipValue) {
-		Dolphin* temp = head;
-		head = head->next;
+
+	// Handle the case where the head needs to be removed
+	while (*head != NULL && (*head)->friendshipValue < friendShipValue) {
+		Dolphin* temp = *head;
+		*head = (*head)->next;
 		free(temp);
 		removedCount++;
 	}
 
-	Dolphin* current = head;
+	// Now handle the rest of the list
+	Dolphin* current = *head;
 	while (current != NULL && current->next != NULL) {
 		if (current->next->friendshipValue < friendShipValue) {
 			Dolphin* temp = current->next;
@@ -72,6 +73,7 @@ int removeByFriendshipValue(Dolphin* head, int friendShipValue) {
 
 	return removedCount;
 }
+
 
 
 Dolphin* createDolphin(int friendshipValue, double length, char nameByChar) {
@@ -149,3 +151,13 @@ Dolphin* readDolphinFromBinFile(FILE* file) {
 	return dolphin;
 }
 
+void removeAndPrintChangesInDolphinsList(Dolphin* head)
+{
+	
+	printf("================BEFORE==============\n");
+	printDolphinList(head);
+	printf("================AFTER==============\n");
+	int removed = removeByFriendshipValue(&(head), 1);
+	printf(" %d dolphins removed \n", removed);
+	printDolphinList(head);
+}
