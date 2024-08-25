@@ -16,6 +16,7 @@ typedef struct Dolphin {
 	char nameByChar;
 }Dolphin;
 
+int countDolphinsInList(Dolphin* head);
 Dolphin* getDolphinFromUser(Dolphin* head);
 Dolphin* searchDolphinByName(char tav, Dolphin* head);
 void printDolphinList(Dolphin* head);
@@ -27,3 +28,4 @@ void writeDolphinToFile(Dolphin* dolphin, FILE* file);
 Dolphin* readDolphinFromFile(FILE* file);
 Dolphin* readDolphinFromBinFile(FILE* file);
 void removeAndPrintChangesInDolphinsList(Dolphin* head);
+
