@@ -19,10 +19,11 @@ typedef struct Dolphin {
 Dolphin* getDolphinFromUser(Dolphin* head);
 Dolphin* searchDolphinByName(char tav, Dolphin* head);
 void printDolphinList(Dolphin* head);
-int removeByFriendshipValue(Dolphin* head, int friendShipValue);
+int removeByFriendshipValue(Dolphin** head, int friendShipValue);
 Dolphin* createDolphin(int friendshipValue, double length, char nameByChar);
 void printDolphin(Dolphin* dolphin);
 void writeDolphinToBinaryFile(Dolphin* dolphin, FILE* file);
 void writeDolphinToFile(Dolphin* dolphin, FILE* file);
 Dolphin* readDolphinFromFile(FILE* file);
 Dolphin* readDolphinFromBinFile(FILE* file);
+void removeAndPrintChangesInDolphinsList(Dolphin* head);
