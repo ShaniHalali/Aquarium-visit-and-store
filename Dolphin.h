@@ -1,12 +1,12 @@
 #pragma once
 #include <stdio.h>
 #include "generalFunctions.h"
-#define PRINTALLDOLPHIND(Fish){\
-				printf("name : %s ,",->name);\
-				printf("length : %lf ,",Fish->age);\
-				printf("friendshipValue: %d \n",Fish->age);\
-				printf("\n");\
+#define PRINTALLDOLPHIND(Fish) {\
+    printf("Name: {%c}, ", Fish->nameByChar);\
+    printf("Length: {%.2lf}, ", Fish->length);\
+    printf("Friendship Value: {%d}\n", Fish->friendshipValue);\
 }
+
 
 
 typedef struct Dolphin {
