@@ -1,13 +1,16 @@
 #pragma once
 #include <stdio.h>
 #include "generalFunctions.h"
+
 #define PRINTALLDOLPHIND(Fish) {\
-    printf("Name: {%c}, ", Fish->nameByChar);\
-    printf("Length: {%.2lf}, ", Fish->length);\
-    printf("Friendship Value: {%d}\n", Fish->friendshipValue);\
+    if (Fish) {\
+        printf("Name: {%c}, ", Fish->nameByChar);\
+        printf("Length: {%.2lf}, ", Fish->length);\
+        printf("Friendship Value: {%d}\n", Fish->friendshipValue);\
+    } else {\
+        printf("Dolphin is NULL\n");\
+    }\
 }
-
-
 
 typedef struct Dolphin {
 	int friendshipValue;
