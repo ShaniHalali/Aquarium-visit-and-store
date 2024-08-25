@@ -44,7 +44,7 @@ Dolphin* getDolphinFromUser(Dolphin* head) {
 }
 
 void printDolphin(Dolphin* dolphin) {
-	printf("Name : {%c} , friendshipValue : {%d} , length {%.2lf}\n", dolphin->nameByChar, dolphin->friendshipValue, dolphin->length);
+	PRINTALLDOLPHIND(dolphin);
 }
 
 
@@ -148,3 +148,4 @@ Dolphin* readDolphinFromBinFile(FILE* file) {
 
 	return dolphin;
 }
+
