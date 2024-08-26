@@ -58,6 +58,10 @@ Dolphin* getDolphinFromUser(Dolphin* head) {
 
 
 	while (fgetchar() != '\n');
+
+	//each friendshipValue of the Dolphins that already exist will rise by 1
+	friendshipValueRiseByOne(head);
+
 	Dolphin* newDolphin = (Dolphin*)calloc(1, sizeof(Dolphin));
 	if (newDolphin == NULL) {
 		printf("Error creating new dolphin \n");
@@ -73,15 +77,15 @@ Dolphin* getDolphinFromUser(Dolphin* head) {
 	return newDolphin;
 }
 
-//void printDolphin(const Dolphin* dolphin) {
-//	PRINTALLDOLPHIND(dolphin);
-//}
+void printDolphin(const Dolphin* dolphin) {
+	PRINTALLDOLPHIND(dolphin);
+}
 
 int removeByFriendshipValue(Dolphin** head, int friendShipValue) {
 	int removedCount = 0;
 
 	// Handle the case where the head needs to be removed
-	while (*head != NULL && (*head)->friendshipValue < friendShipValue) {
+	while (*head != NULL && (*head)->friendshipValue <= friendShipValue) {
 		Dolphin* temp = *head;
 		*head = (*head)->next;
 		free(temp);
@@ -91,7 +95,7 @@ int removeByFriendshipValue(Dolphin** head, int friendShipValue) {
 	// Now handle the rest of the list
 	Dolphin* current = *head;
 	while (current != NULL && current->next != NULL) {
-		if (current->next->friendshipValue < friendShipValue) {
+		if (current->next->friendshipValue <= friendShipValue) {
 			Dolphin* temp = current->next;
 			current->next = temp->next;
 			free(temp);
@@ -102,12 +106,19 @@ int removeByFriendshipValue(Dolphin** head, int friendShipValue) {
 		}
 	}
 
+	//friendshipValue of each Dolphin will decrease by the number of removed Dolphins  
+	if (removedCount > 0) 
+	{
+		friendshipValueDecreaseByRemovedDolphins(head, removedCount);
+		
+	}
 	return removedCount;
 }
 
 
 
 Dolphin* createDolphin(int friendshipValue, double length, char nameByChar) {
+
 	Dolphin* newDolphin = (Dolphin*)malloc(sizeof(Dolphin));
 	if (newDolphin == NULL) {
 		printf("Memory allocation failed!\n");
@@ -182,15 +193,63 @@ Dolphin* readDolphinFromBinFile(FILE* file) {
 	return dolphin;
 }
 
-void removeAndPrintChangesInDolphinsList(Dolphin* head)
+
+void friendshipValueRiseByOne(Dolphin* head)
 {
+	while (head != NULL) {
+		head->friendshipValue = head->friendshipValue + 1;
+		head = head->next;
+	}
+
+}
+
+void friendshipValueDecreaseByRemovedDolphins(Dolphin** head, const int removedDolphinsCount) {
+	Dolphin* current = *head;
+	while (current != NULL) {
+		current->friendshipValue -= removedDolphinsCount;
+		current = current->next;
+	}
+}
+
+
+
+// Function to safely read an integer from user input
+int readFriendshipIntegerFromUser() {
+	int value;
+	char term; // Variable to check for any extra characters in the input
+
+	
+	printf("Enter the friendship value to remove dolphins (at least 0): ");
+
+	while (1) {
+		// Read the integer value and any extra characters
+		if (scanf("%d%c", &value, &term) != 2 || term != '\n') {
+			// If the input is not valid, clear the input buffer
+			printf("Invalid input. Please enter a valid integer value: ");
+			while (getchar() != '\n'); // Clear invalid input from buffer
+		}
+		else if (value < 0) {
+			printf("Please enter a non-negative integer: ");
+		}
+		else {
+			return value;
+		}
+	}
+}
+
+void removeAndPrintChangesInDolphinsList(Dolphin* head) {
 	printf("================BEFORE==============\n");
 	printDolphinList(head);
 
 	printf("================AFTER==============\n");
 
-	int friendshipValue = 1; // maybe the user will chose it ???? ////////////////////
+	// Read and validate user input for friendship value
+	int friendshipValue = readFriendshipIntegerFromUser();
+
+	// Remove dolphins with friendshipValue less than the user input
 	int removed = removeByFriendshipValue(&(head), friendshipValue);
-	printf(" %d dolphins removed \n", removed);
+	printf("%d dolphins removed,\neach Dolphin's FriendshipValue will decrease by the number of removed Dolphins = %d\n \n", removed, removed);
+
+	// Print the dolphin list after changes
 	printDolphinList(head);
 }
