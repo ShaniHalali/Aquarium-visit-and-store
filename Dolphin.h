@@ -1,4 +1,5 @@
 #pragma once
+
 #include <stdio.h>
 #include "generalFunctions.h"
 
@@ -19,16 +20,16 @@ typedef struct Dolphin {
 	char nameByChar;
 }Dolphin;
 
-int countDolphinsInList(Dolphin* head);
+int countDolphinsInList(const Dolphin* head); 
 Dolphin* getDolphinFromUser(Dolphin* head);
-Dolphin* searchDolphinByName(char tav, Dolphin* head);
-void printDolphinList(Dolphin* head);
+Dolphin* searchDolphinByName(const char tav,const Dolphin* head);
+void printDolphinList(const Dolphin* head);
 int removeByFriendshipValue(Dolphin** head, int friendShipValue);
-Dolphin* createDolphin(int friendshipValue, double length, char nameByChar);
-void printDolphin(Dolphin* dolphin);
+Dolphin* createDolphin(const int friendshipValue,const double length,const char nameByChar);////
 void writeDolphinToBinaryFile(Dolphin* dolphin, FILE* file);
 void writeDolphinToFile(Dolphin* dolphin, FILE* file);
 Dolphin* readDolphinFromFile(FILE* file);
 Dolphin* readDolphinFromBinFile(FILE* file);
 void removeAndPrintChangesInDolphinsList(Dolphin* head);
 
+//void printDolphin(const Dolphin* dolphin); -  we used Macro insted
