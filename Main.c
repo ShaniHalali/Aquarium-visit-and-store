@@ -1,195 +1,204 @@
-#define _CRT_SECURE_NO_WARNINGS
-#pragma warning (disable:4996)
-#include "Dolphin.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "Dolphin.h"
+#include "ClownFish.h"
+#include "generalFunctions.h"
+#include "SeaCreatures.h"
+#include "Shark.h"
 
-int countDolphinsInList(Dolphin* head) {
-	int count = 0;  
+#include "ChildFish.h"
+#include <stdio.h>
+#include "CentralAquarium.h"
+#include "SaltAquarium.h"
 
 
-	while (head != NULL) {
-		count++;          
-		head = head->next; 
-	}
 
-	return count; 
+CentralAquarium* createOurAquarium() {
+    CentralAquarium* myAquarium = initCentralAquarium("Our Aquarium");
+    Dolphin* dolphin1 = createDolphin(10, 5.3, 'A');
+    Dolphin* dolphin2 = createDolphin(10, 6.1, 'B');
+    Dolphin* dolphin3 = createDolphin(0, 4.9, 'C');
+    insertDolphinLinkedList(myAquarium->freshAquarium, dolphin1);
+    insertDolphinLinkedList(myAquarium->freshAquarium, dolphin2);
+    insertDolphinLinkedList(myAquarium->freshAquarium, dolphin3);
+
+    FreshFish* freshFish1 = createFreshFish(10, 5, "fresh1");
+    FreshFish* freshFish2 = createFreshFish(10, 5, "fresh2");
+    ChildFish* childFish_1_2 = createChildFIsh(1, freshFish1, freshFish2);
+    addFreshFish(myAquarium->freshAquarium, freshFish1, freshFish2);
+    FreshFish* freshFish3 = createFreshFish(7, 5, "fresh3");
+    FreshFish* freshFish4 = createFreshFish(7, 5, "fresh4");
+    ChildFish* childFish_3_4 = createChildFIsh(2, freshFish3, freshFish4);
+    addFreshFish(myAquarium->freshAquarium, freshFish3, freshFish4);
+
+    SeaCreature* seaCreature1 = createSeaCreature(8, 10, 1, 2);
+    SeaCreature* seaCreature2 = createSeaCreature(3, 8, 3, 4);
+    addSeaCreature(myAquarium->saltAquarium, seaCreature1);
+    addSeaCreature(myAquarium->saltAquarium, seaCreature2);
+
+    Shark* shark1 = createShark("MommyShark", 700.0, 7, 12, 2, 4);
+    Shark* shark2 = createShark("DaddyShark", 1500.0, 10, 30, 0, 3);
+    addShark(myAquarium->saltAquarium, shark1);
+    addShark(myAquarium->saltAquarium, shark2);
+
+    ClownFish* clownFish1 = createClownFish("Nemo1", 2, 4, 1, 2);
+    ClownFish* clownFish2 = createClownFish("Nemo2", 5, 8, 3, 4);
+    addClownFish(myAquarium->saltAquarium, clownFish1);
+    addClownFish(myAquarium->saltAquarium, clownFish2);
+
+    addRandomFish(myAquarium->freshAquarium, createRandomFish());
+    addRandomFish(myAquarium->freshAquarium, createRandomFish());
+    addRandomFish(myAquarium->freshAquarium, createRandomFish());
+
+
+    return myAquarium;
 }
 
-
-
-Dolphin* searchDolphinByName(char tav, Dolphin* head)
+int main(void)
 {
-	Dolphin* temp = head;
-	while (temp != NULL)
-	{
-		if (temp->nameByChar == tav) {
-			return temp;
-		}
-		temp = temp->next;
-	}
-	return NULL;
-}
+    //CentralAquarium* aquarium = initCentralAquarium("Amazing Aquarium");
+    CentralAquarium* aquarium = createOurAquarium();
 
-Dolphin* getDolphinFromUser(Dolphin* head) {
-	char tav;
-	while (fgetchar() != '\n');
-	printf("Enter the dolphin name by capital letter:");
-	do {
-		tav = getchar();
-		if (searchDolphinByName(tav, head) != NULL) {
-			printf("this name = %c is already taken \n", tav);
-			printf("Enter the dolphin name by capital letter:");
-		}
-	} while (tav < 'A' || tav>'Z' || searchDolphinByName(tav, head) != NULL);
+    int choice;
+    do {
+        printf("\n--- Aquarium Management System ---\n");
+        printf("1.  Print Central Aquarium\n");
+        printf("2.  Write Aquarium to text file \n");
+        printf("3.  Read Aquarium from text file \n");
+        printf("4.  Write Aquarium to binary file \n");
+        printf("5.  Read Aquarium from binary file \n");
+        printf("6.  Add a dolphin \n");
+        printf("7.  Search dolphin by name\n");
+        printf("8.  Remove dolphin by friendship value \n");
+        printf("9.  Add sea creature \n");
+        printf("10. Age all saltAquarium sea creatures \n");
+        printf("11. Add a shark\n");
+        printf("12. Sort salt Aquarium sharks by criteria \n");
+        printf("13. Search salt Aquarium sharks by criteria \n");
+        printf("14. Add a clown fish \n");
+        printf("15. Add a fresh fish \n");
+        printf("16. Add a child fish \n");
+        printf("17. Add a random fish \n");
+        printf("18. Find the oldest fresh fish in the aquarium \n");
+        printf("19. Exit \n");
+        printf("Enter your choice: \n");
+        scanf("%d", &choice);
+        switch (choice) {
+        case 1: {
+            printAllCentralAuqruaiumDetails(aquarium);
+            break;
+        }
+        case 2: {
+            writeCentralAquariumToTxtFile(aquarium, "test.txt");
+            printf("Write to file sucssefuly\n");
+            break;
+        }
+        case 3: {
+            aquarium = readCentralAquariumFromTxtFile("test.txt");
+            printAllCentralAuqruaiumDetails(aquarium);
+            break;
+        }
+        case 4: {
+            writeCentralAquariumToBinnaryFile(aquarium, "test.bin");
+            break;
+        }
+        case 5: {
+            aquarium = readCentralAquariumFromBinnaryFile("test.bin");
+            break;
+        }
+        case 6: {
+            Dolphin* userDolphin = getDolphinFromUser(aquarium->freshAquarium->dolphinLinkedList);
+            insertDolphinLinkedList(aquarium->freshAquarium, userDolphin);
+            break;
+        }
+        case 7: {
+            clearInputBuffer();
+            char tav;
+            printf("Please eneter one Char\n");
+            scanf("%c", &tav);
+            Dolphin* result = searchDolphinByName(tav, aquarium->freshAquarium->dolphinLinkedList);
+            if (result == NULL) {
+                printf("No dolphin found\n");
+            }
+            else {
+                printDolphin(result);
+            }
+            break;
+        }
+        case 8: {
+            removeAndPrintChangesInDolphinsList(aquarium->freshAquarium->dolphinLinkedList);
+            
+            break;
+        }
 
-	double minLength = 10;
-	double length = 0;
-	printf("Enter the dolphin length (at least %.1lf) :", minLength);
-
-	do {
-		
-		scanf("%lf", &length);
-		if (length < minLength) {
-			printf("%.2lf is smaller than the minimum length \n", length);
-			printf("Please Enter the dolphin length (at least %.1lf) :", minLength);
-		}
-	} while (length < minLength);
-
-
-	while (fgetchar() != '\n');
-	Dolphin* newDolphin = (Dolphin*)calloc(1, sizeof(Dolphin));
-	if (newDolphin == NULL) {
-		printf("Error creating new dolphin \n");
-		return;
-	}
-	newDolphin->length = length;
-	//friendshipValue equal to the num of the exist dolphins before adding a new one
-	newDolphin->friendshipValue = countDolphinsInList(head)-1;
-	newDolphin->nameByChar = tav;
-	
-	printf("\nnew Dolphin added successfully! is details are : \n");
-	PRINTALLDOLPHIND(newDolphin);
-	return newDolphin;
-}
-
-void printDolphin(Dolphin* dolphin) {
-	PRINTALLDOLPHIND(dolphin);
-}
-
-int removeByFriendshipValue(Dolphin** head, int friendShipValue) {
-	int removedCount = 0;
-
-	// Handle the case where the head needs to be removed
-	while (*head != NULL && (*head)->friendshipValue < friendShipValue) {
-		Dolphin* temp = *head;
-		*head = (*head)->next;
-		free(temp);
-		removedCount++;
-	}
-
-	// Now handle the rest of the list
-	Dolphin* current = *head;
-	while (current != NULL && current->next != NULL) {
-		if (current->next->friendshipValue < friendShipValue) {
-			Dolphin* temp = current->next;
-			current->next = temp->next;
-			free(temp);
-			removedCount++;
-		}
-		else {
-			current = current->next;
-		}
-	}
-
-	return removedCount;
-}
-
-
-
-Dolphin* createDolphin(int friendshipValue, double length, char nameByChar) {
-	Dolphin* newDolphin = (Dolphin*)malloc(sizeof(Dolphin));
-	if (newDolphin == NULL) {
-		printf("Memory allocation failed!\n");
-		exit(1);
-	}
-	newDolphin->friendshipValue = friendshipValue;
-	newDolphin->length = length;
-	newDolphin->nameByChar = nameByChar;
-	newDolphin->next = NULL;
-	return newDolphin;
-}
-
-void writeDolphinToBinaryFile(Dolphin* dolphin, FILE* file) {
-	if (dolphin == NULL || file == NULL) {
-		printf("Invalid input parameters!\n");
-		return;
-	}
-	fwrite(&dolphin->friendshipValue, sizeof(int), 1, file);
-	writeDoubleToBinaryFile(dolphin->length, file);
-	//fwrite(&dolphin->length, sizeof(double), 1, file);
-	fwrite(&dolphin->nameByChar, sizeof(char), 1, file);
-}
-
-void writeDolphinToFile(Dolphin* dolphin, FILE* file) {
-	if (dolphin == NULL || file == NULL) {
-		printf("Invalid input parameters!\n");
-		return;
-	}
-	fprintf(file, "%d,%.2f,%c\n", dolphin->friendshipValue, dolphin->length, dolphin->nameByChar);
-}
-
-Dolphin* readDolphinFromFile(FILE* file) {
-	if (file == NULL) {
-		printf("Invalid file!\n");
-		return NULL;
-	}
-
-	Dolphin* dolphin = (Dolphin*)calloc(1, sizeof(Dolphin));
-	if (dolphin == NULL) {
-		printf("Memory allocation failed!\n");
-		return NULL;
-	}
-
-	if (fscanf(file, "%d,%lf,%c ", &dolphin->friendshipValue, &dolphin->length, &dolphin->nameByChar) != 3) {
-		printf("Failed to read Dolphin details from file!\n");
-		free(dolphin);
-		return NULL;
-	}
-
-	return dolphin;
-}
-
-
-Dolphin* readDolphinFromBinFile(FILE* file) {
-	if (file == NULL) {
-		printf("Invalid file!\n");
-		return NULL;
-	}
-
-	Dolphin* dolphin = (Dolphin*)calloc(1, sizeof(Dolphin));
-	if (dolphin == NULL) {
-		printf("Memory allocation failed!\n");
-		return NULL;
-	}
-
-	fread(&dolphin->friendshipValue, sizeof(int), 1, file);
-	dolphin->length = readDoubleFromBinaryFile(file);
-	//writeDoubleToBinaryFile(dolphin->length, file);
-	//fread(&dolphin->length, sizeof(double), 1, file);
-	fread(&dolphin->nameByChar, sizeof(char), 1, file);
-
-	return dolphin;
-}
-
-void removeAndPrintChangesInDolphinsList(Dolphin* head)
-{
-
-	printf("================BEFORE==============\n");
-	printDolphinList(head);
-	printf("================AFTER==============\n");
-	int friendshipValue = 1; // may be the user will chose it ????
-	int removed = removeByFriendshipValue(&(head), friendshipValue);
-	printf(" %d dolphins removed \n", removed);
-	printDolphinList(head);
+        case 9: {
+            getSeaCreatureFromUser(aquarium->saltAquarium);
+            break;
+        }
+        case 10: {
+            ageAllSeaCreatures(aquarium->saltAquarium);
+            ageAllSharks(aquarium->saltAquarium);
+            ageAllClownFishes(aquarium->saltAquarium);
+            break;
+        }
+        case 11: {
+            getSharkFromUser(aquarium->saltAquarium);
+            break;
+        }
+        case 12: {
+            sortSharksMenu(aquarium->saltAquarium);
+            break;
+        }
+        case 13: {
+            sharkSearchMenu(aquarium->saltAquarium);
+            break;
+        }
+        case 14: {
+            initClownFish(aquarium->saltAquarium);
+            break;
+        }
+        case 15: {
+            FreshFish* newFreshFish1 = createFreshFishFromUser();
+            FreshFish* newFreshFish2 = createFreshFishFromUser();
+            if (newFreshFish1 != NULL) {
+                addFreshFish(aquarium->freshAquarium, newFreshFish1, newFreshFish2);
+                printf("Fresh fish added successfully!\n");
+            }
+            else {
+                printf("Failed to create random fish.\n");
+            }
+            break;
+        }
+        case 16: {
+            FreshFish* f1 = createFreshFishFromUser();
+            FreshFish* f2 = createFreshFishFromUser();
+            printf("Enter Number of child\n");
+            int numOfChild = 0;
+            scanf("%d", &numOfChild);
+            ChildFish* child = createChildFIsh(numOfChild, f1, f2);
+            addFreshFish(aquarium->freshAquarium, f1, f2);
+            break;
+        }
+        case 17: {
+            RandomFish* newRandomFish = createRandomFish();
+            if (newRandomFish != NULL) {
+                addRandomFish(aquarium->freshAquarium, newRandomFish);
+                printf("Random fish added successfully!\n");
+            }
+            else {
+                printf("Failed to create random fish.\n");
+            }
+            break;
+        }
+        case 18: {
+            findOldestFish(aquarium->freshAquarium->freshFish, aquarium->freshAquarium->freshFishSize);
+            break;
+        }
+        case 19: {
+            void freeCentralAquarium(aquarium);
+            printf("Thank you!");
+            break;
+        }
+        }
+    } while (choice != 19);
 }
