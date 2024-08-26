@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int countDolphinsInList(Dolphin* head) {
+int countDolphinsInList(const Dolphin* head) {
 	int count = 0;  
 
 
@@ -18,7 +18,7 @@ int countDolphinsInList(Dolphin* head) {
 
 
 
-Dolphin* searchDolphinByName(char tav, Dolphin* head)
+Dolphin* searchDolphinByName(const char tav, const Dolphin* head)
 {
 	Dolphin* temp = head;
 	while (temp != NULL)
@@ -73,9 +73,9 @@ Dolphin* getDolphinFromUser(Dolphin* head) {
 	return newDolphin;
 }
 
-void printDolphin(Dolphin* dolphin) {
-	PRINTALLDOLPHIND(dolphin);
-}
+//void printDolphin(const Dolphin* dolphin) {
+//	PRINTALLDOLPHIND(dolphin);
+//}
 
 int removeByFriendshipValue(Dolphin** head, int friendShipValue) {
 	int removedCount = 0;
@@ -184,11 +184,12 @@ Dolphin* readDolphinFromBinFile(FILE* file) {
 
 void removeAndPrintChangesInDolphinsList(Dolphin* head)
 {
-
 	printf("================BEFORE==============\n");
 	printDolphinList(head);
+
 	printf("================AFTER==============\n");
-	int friendshipValue = 1; // may be the user will chose it ????
+
+	int friendshipValue = 1; // maybe the user will chose it ???? ////////////////////
 	int removed = removeByFriendshipValue(&(head), friendshipValue);
 	printf(" %d dolphins removed \n", removed);
 	printDolphinList(head);
