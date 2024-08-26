@@ -31,5 +31,7 @@ void writeDolphinToFile(Dolphin* dolphin, FILE* file);
 Dolphin* readDolphinFromFile(FILE* file);
 Dolphin* readDolphinFromBinFile(FILE* file);
 void removeAndPrintChangesInDolphinsList(Dolphin* head);
-
-//void printDolphin(const Dolphin* dolphin); -  we used Macro insted
+void printDolphin(const Dolphin* dolphin);
+void friendshipValueRiseByOne(Dolphin* head);
+void friendshipValueDecreaseByRemovedDolphins(Dolphin** head, const int removedDolphinsCount);
+int readFriendshipIntegerFromUser();
