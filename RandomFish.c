@@ -1,29 +1,49 @@
-#include"RandomFish.h"
+#include "RandomFish.h"
+#define _CRT_SECURE_NO_WARNINGS
+#pragma warning (disable:4996)
 
-
-void printRandomFish(RandomFish* randomFish)
-{
-    printf("Age: {%d} , Pattern: {%s} , Color: {%s} \n",
+// Function to print RandomFish details
+void printRandomFish(RandomFish* randomFish) {
+    printf("Age: {%d}, Pattern: {%s}, Color: {%s}, ",
         randomFish->age,
         randomFishPattern[randomFish->pattern],
         randomFishColor[randomFish->color]);
+    printFishTimestamp(randomFish);
 }
 
+// Function to create a new RandomFish
 RandomFish* createRandomFish() {
     RandomFish* result = (RandomFish*)calloc(1, sizeof(RandomFish));
-    result->age = rand() % (10) + 1;
-    result->pattern = rand() % (3);
-    result->color = rand() % (5);
+    if (result == NULL) {
+        printf("Memory allocation failed\n");
+        return NULL;
+    }
+
+    result->age = rand() % 10 + 1;
+    result->pattern = rand() % eNofrandomFishPattern;
+    result->color = rand() % eNofrandomFishColor;
+
+    // Allocate memory for timestamp and set the current time
+    FishTimestamp* timestamp = (FishTimestamp*)malloc(sizeof(FishTimestamp));
+    if (timestamp != NULL) {
+        timestamp->timestamp = time(NULL);
+        result->extraInfo = timestamp;
+    }
+    else {
+        result->extraInfo = NULL;
+    }
+
+    result->next = NULL; // Initialize next to NULL for new nodes
+
     return result;
 }
 
-
+// Function to write RandomFish to a text file
 void writeRandomFish(RandomFish* random, FILE* file) {
-
     fprintf(file, "%d,%d,%d\n", random->age, random->pattern, random->color);
-
 }
 
+// Function to read RandomFish from a text file
 RandomFish* readRandomFishFromFile(FILE* fp) {
     RandomFish* random = (RandomFish*)calloc(1, sizeof(RandomFish));
     if (random == NULL) {
@@ -32,23 +52,25 @@ RandomFish* readRandomFishFromFile(FILE* fp) {
     }
 
     if (fscanf(fp, "%d,%d,%d\n", &random->age, (int*)&random->pattern, (int*)&random->color) != 3) {
+        free(random);
         return NULL;
     }
     return random;
-
 }
+
+// Function to write RandomFish to a binary file
 void writeRandomFishToBinaryFile(RandomFish* random, FILE* file) {
     if (file == NULL) {
         printf("Invalid file!\n");
         return;
     }
 
-    // Write the RandomFish structure to the file
     fwrite(&random->age, sizeof(int), 1, file);
     fwrite(&random->pattern, sizeof(int), 1, file);
     fwrite(&random->color, sizeof(int), 1, file);
 }
 
+// Function to read RandomFish from a binary file
 RandomFish* readRandomFishFromBinaryFile(FILE* file) {
     if (file == NULL) {
         printf("Invalid file!\n");
@@ -61,7 +83,6 @@ RandomFish* readRandomFishFromBinaryFile(FILE* file) {
         return NULL;
     }
 
-    // Read the RandomFish structure from the file
     if (fread(&random->age, sizeof(int), 1, file) != 1 ||
         fread(&random->pattern, sizeof(int), 1, file) != 1 ||
         fread(&random->color, sizeof(int), 1, file) != 1) {
@@ -70,4 +91,52 @@ RandomFish* readRandomFishFromBinaryFile(FILE* file) {
     }
 
     return random;
+}
+
+// Function to free RandomFish and its extraInfo
+void freeRandomFish(RandomFish* fish) {
+    if (fish != NULL) {
+        if (fish->extraInfo != NULL) {
+            free(fish->extraInfo);
+        }
+        free(fish);
+    }
+}
+
+// Function to print the timestamp of when the fish was added
+void printFishTimestamp(RandomFish* fish) {
+    if (fish != NULL && fish->extraInfo != NULL) {
+        FishTimestamp* timestamp = (FishTimestamp*)fish->extraInfo;
+        printf("Fish added at: %s", ctime(&timestamp->timestamp));
+    }
+    else {
+        printf("No timestamp available.\n");
+    }
+}
+
+// Function to add a new fish to the linked list
+void addFishToList(RandomFish** head, RandomFish* newFish) {
+    newFish->next = *head; 
+    *head = newFish;       
+}
+
+// Function to print all fish in the linked list
+void printFishList(RandomFish* head) {
+    RandomFish* current = head;
+    while (current != NULL) {
+        printRandomFish(current);
+        printf("\n"); 
+        current = current->next;
+    }
+}
+
+// Function to free all fish in the linked list
+void freeFishList(RandomFish* head) {
+    RandomFish* current = head;
+    RandomFish* next;
+    while (current != NULL) {
+        next = current->next; 
+        freeRandomFish(current); 
+        current = next; 
+    }
 }
