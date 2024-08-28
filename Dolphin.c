@@ -71,7 +71,7 @@ Dolphin* getDolphinFromUser(Dolphin* head) {
     }
     newDolphin->length = length;
     // The new Dolphin friendshipValue is equal to the num of Dolphins in the list before adding the new one
-    newDolphin->friendshipValue = countDolphinsInList(head) - 1;
+    newDolphin->friendshipValue = countDolphinsInList(head);
     newDolphin->nameByChar = tav;
     newDolphin->next = NULL;
     newDolphin->prev = NULL; // Initialize prev to NULL
@@ -223,7 +223,10 @@ void removeAndPrintChangesInDolphinsList(Dolphin** head) {
     printf("================AFTER==============\n");
 
     if (removed > 0) {
-        printf("\n%d dolphins removed. Updated list:\n", removed);
+        printf("%d dolphins removed. \nUpdated list after decrease each Dolphin friendshipValue :\n", removed);
+
+        //Decrease Each Dolphin friendshipValue by the num of removed Dolphins
+        friendshipValueDecreaseByRemovedDolphins(head, removed);
         printDolphinList(*head);
     }
     else {
@@ -245,11 +248,15 @@ void friendshipValueDecreaseByRemovedDolphins(Dolphin** head, const int removedD
     Dolphin* current = *head;
     while (current != NULL) {
         if (current->friendshipValue > removedDolphinsCount) {
-            current->friendshipValue -= removedDolphinsCount;
+            current->friendshipValue = current->friendshipValue - removedDolphinsCount;
+        }
+        else {
+            current->friendshipValue = 0; // Ensure friendship value does not go negative
         }
         current = current->next;
     }
 }
+
 
 int readFriendshipIntegerFromUser() {
     int value;
