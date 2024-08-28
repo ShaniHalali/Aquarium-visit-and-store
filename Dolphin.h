@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <ctype.h>
 
-
-
 #define PRINTALLDOLPHIND(Fish) {\
     if (Fish) {\
         printf("Name: {%c}, ", Fish->nameByChar);\
@@ -25,15 +23,17 @@ typedef struct Dolphin {
 int countDolphinsInList(const Dolphin* head);
 Dolphin* getDolphinFromUser(Dolphin* head);
 Dolphin* searchDolphinByName(const char tav, const Dolphin* head);
+void printDolphin(const Dolphin* dolphin);
 void printDolphinList(const Dolphin* head);
 int removeByFriendshipValue(Dolphin** head, int friendShipValue);
 Dolphin* createDolphin(const int friendshipValue, const double length, const char nameByChar);
+void removeAndPrintChangesInDolphinsList(Dolphin** head);
+void friendshipValueRiseByOne(Dolphin* head);
+void friendshipValueDecreaseByRemovedDolphins(Dolphin** head, const int removedDolphinsCount);
+int readFriendshipIntegerFromUser();
+
+//Files
 void writeDolphinToBinaryFile(Dolphin* dolphin, FILE* file);
 void writeDolphinToFile(Dolphin* dolphin, FILE* file);
 Dolphin* readDolphinFromFile(FILE* file);
 Dolphin* readDolphinFromBinFile(FILE* file);
-void removeAndPrintChangesInDolphinsList(Dolphin** head);
-void printDolphin(const Dolphin* dolphin);
-void friendshipValueRiseByOne(Dolphin* head);
-void friendshipValueDecreaseByRemovedDolphins(Dolphin** head, const int removedDolphinsCount);
-int readFriendshipIntegerFromUser();
