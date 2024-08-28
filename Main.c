@@ -15,12 +15,14 @@
 
 CentralAquarium* createOurAquarium() {
     CentralAquarium* myAquarium = initCentralAquarium("Our Aquarium");
-    Dolphin* dolphin1 = createDolphin(10, 5.3, 'A');
-    Dolphin* dolphin2 = createDolphin(10, 6.1, 'B');
-    Dolphin* dolphin3 = createDolphin(0, 4.9, 'C');
+    Dolphin* dolphin1 = createDolphin(11, 5.3, 'A');
+    Dolphin* dolphin2 = createDolphin(20, 6.1, 'B');
+    Dolphin* dolphin3 = createDolphin(10, 4.9, 'C');
+    Dolphin* dolphin4 = createDolphin(12, 7.11, 'D');
     insertDolphinLinkedList(myAquarium->freshAquarium, dolphin1);
     insertDolphinLinkedList(myAquarium->freshAquarium, dolphin2);
     insertDolphinLinkedList(myAquarium->freshAquarium, dolphin3);
+    insertDolphinLinkedList(myAquarium->freshAquarium, dolphin4);
 
     FreshFish* freshFish1 = createFreshFish(10, 5, "fresh1");
     FreshFish* freshFish2 = createFreshFish(10, 5, "fresh2");
@@ -54,34 +56,32 @@ CentralAquarium* createOurAquarium() {
     return myAquarium;
 }
 
-int main(void)
-{
-    //CentralAquarium* aquarium = initCentralAquarium("Amazing Aquarium");
+int main(void) {
     CentralAquarium* aquarium = createOurAquarium();
 
     int choice;
     do {
         printf("\n--- Aquarium Management System ---\n");
         printf("1.  Print Central Aquarium\n");
-        printf("2.  Write Aquarium to text file \n");
-        printf("3.  Read Aquarium from text file \n");
-        printf("4.  Write Aquarium to binary file \n");
-        printf("5.  Read Aquarium from binary file \n");
-        printf("6.  Add a dolphin \n");
+        printf("2.  Write Aquarium to text file\n");
+        printf("3.  Read Aquarium from text file\n");
+        printf("4.  Write Aquarium to binary file\n");
+        printf("5.  Read Aquarium from binary file\n");
+        printf("6.  Add a dolphin\n");
         printf("7.  Search dolphin by name\n");
-        printf("8.  Remove dolphin by friendship value \n");
-        printf("9.  Add sea creature \n");
-        printf("10. Age all saltAquarium sea creatures \n");
+        printf("8.  Remove dolphin by friendship value\n");
+        printf("9.  Add a sea creature\n");
+        printf("10. Age all saltAquarium sea creatures\n");
         printf("11. Add a shark\n");
-        printf("12. Sort salt Aquarium sharks by criteria \n");
-        printf("13. Search salt Aquarium sharks by criteria \n");
-        printf("14. Add a clown fish \n");
-        printf("15. Add a fresh fish \n");
-        printf("16. Add a child fish \n");
-        printf("17. Add a random fish \n");
-        printf("18. Find the oldest fresh fish in the aquarium \n");
-        printf("19. Exit \n");
-        printf("Enter your choice: \n");
+        printf("12. Sort salt Aquarium sharks by criteria\n");
+        printf("13. Search salt Aquarium sharks by criteria\n");
+        printf("14. Add a clown fish\n");
+        printf("15. Add a fresh fish\n");
+        printf("16. Add a child fish\n");
+        printf("17. Add a random fish\n");
+        printf("18. Find the oldest fresh fish in the aquarium\n");
+        printf("19. Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &choice);
         switch (choice) {
         case 1: {
@@ -90,7 +90,7 @@ int main(void)
         }
         case 2: {
             writeCentralAquariumToTxtFile(aquarium, "test.txt");
-            printf("Write to file sucssefuly\n");
+            printf("Write to file successfully\n");
             break;
         }
         case 3: {
@@ -107,14 +107,14 @@ int main(void)
             break;
         }
         case 6: {
-            Dolphin* userDolphin = getDolphinFromUser(aquarium->freshAquarium->dolphinLinkedList);
-            insertDolphinLinkedList(aquarium->freshAquarium, userDolphin);
+            // Update dolphin list with the returned value from getDolphinFromUser
+            aquarium->freshAquarium->dolphinLinkedList = getDolphinFromUser(aquarium->freshAquarium->dolphinLinkedList);
             break;
         }
         case 7: {
             clearInputBuffer();
             char tav;
-            printf("Please eneter one Char\n");
+            printf("Please enter one character: ");
             scanf("%c", &tav);
             Dolphin* result = searchDolphinByName(tav, aquarium->freshAquarium->dolphinLinkedList);
             if (result == NULL) {
@@ -126,11 +126,11 @@ int main(void)
             break;
         }
         case 8: {
-            removeAndPrintChangesInDolphinsList(aquarium->freshAquarium->dolphinLinkedList);
-            
+
+            removeAndPrintChangesInDolphinsList(&(aquarium->freshAquarium->dolphinLinkedList));
+
             break;
         }
-
         case 9: {
             getSeaCreatureFromUser(aquarium->saltAquarium);
             break;
@@ -165,14 +165,14 @@ int main(void)
                 printf("Fresh fish added successfully!\n");
             }
             else {
-                printf("Failed to create random fish.\n");
+                printf("Failed to create fresh fish.\n");
             }
             break;
         }
         case 16: {
             FreshFish* f1 = createFreshFishFromUser();
             FreshFish* f2 = createFreshFishFromUser();
-            printf("Enter Number of child\n");
+            printf("Enter number of child: ");
             int numOfChild = 0;
             scanf("%d", &numOfChild);
             ChildFish* child = createChildFIsh(numOfChild, f1, f2);
@@ -195,10 +195,13 @@ int main(void)
             break;
         }
         case 19: {
-            void freeCentralAquarium(aquarium);
-            printf("Thank you!");
+            // Free the aquarium and exit
+            freeCentralAquarium(aquarium);
+            printf("Thank you!\n");
             break;
         }
         }
     } while (choice != 19);
+
+    return 0;
 }
