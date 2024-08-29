@@ -19,7 +19,7 @@ int compareSharksName(const void* a, const void* b);
 int compareSharksAge(const void* a, const void* b);
 int compareSharksWeight(const void* a, const void* b);
 
-Shark* createShark(const char* name, double weight, int age, int lifeSpan, eSeaCreatureColour color1, eSeaCreatureColour color2);
+Shark* createShark(const char* name, double weight, int age, int lifeSpan, eSeaCreatureColor color1, eSeaCreatureColor color2);
 void writeSharkToFile(Shark* shark, FILE* file);
 Shark* readSharkFromFile(FILE* file);
 void writeSharkToBinaryFile(Shark* shark, FILE* file);
