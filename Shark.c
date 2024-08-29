@@ -5,26 +5,24 @@
 #include "Shark.h"
 #include "generalFunctions.h"
 
-// Function to initialize a single shark
 void getSharkFromUser(Shark* shark) {
-    printf("Enter shark's name: ");
+    printf("Enter shark name: ");
     scanf("%s", shark->name);
 
-    printf("Enter shark's weight: ");
-    scanf("%lf", &shark->weight);
-    getSeaCreatureFromUser(&(shark->seaCreature));
+    do {
+        printf("Enter shark weight (must be greater than 10): ");
+        scanf("%lf", &shark->weight);
+        if (shark->weight > 10) {
+            break; // Valid input
+        }
+        printf("Invalid weight. Weight must be greater than 10.\n");
+    } while (1);
+
+    shark->seaCreature.age = getValidAge();
+    shark->seaCreature.lifeSpan = getValidLifeSpan(shark->seaCreature.age);
+
+    getValidColours(&shark->seaCreature);
 }
-/*
-void printShark(const void* ptr) {
-    const Shark* shark = (const Shark*)ptr;
-    printf("\nShark: %s\n", shark->name);
-    printf("Shark's weight: %.2lf\n", shark->weight);
-    printf("Shark's age: %d\n", shark->seaCreature.age);
-    printf("Shark's life span: %d\n", shark->seaCreature.lifeSpan);
-    printf("Shark's colours: %s, %s\n", SeaCreatureColour[shark->seaCreature.colour1], SeaCreatureColour[shark->seaCreature.colour2]);
-    printf("\n");
-}
-*/
 
 // Function to compare two sharks by name
 int compareSharksName(const void* a, const void* b) {
@@ -53,21 +51,21 @@ int compareSharksWeight(const void* a, const void* b) {
     else return 0;
 }
 
-Shark* createShark(const char* name, double weight, int age, int lifeSpan, eSeaCreatureColour color1, eSeaCreatureColour color2) {
+Shark* createShark(const char* name, double weight, int age, int lifeSpan, eSeaCreatureColor color1, eSeaCreatureColor color2) {
     Shark* result = (Shark*)calloc(1, sizeof(Shark));
     strncpy(result->name, name, sizeof(result->name) - 1);
     result->name[sizeof(result->name) - 1] = '\0';
     result->weight = weight;
     result->seaCreature.age = age;
     result->seaCreature.lifeSpan = lifeSpan;
-    result->seaCreature.colour1 = color1;
-    result->seaCreature.colour2 = color2;
+    result->seaCreature.color1 = color1;
+    result->seaCreature.color2 = color2;
     return result;
 }
 
 void writeSharkToFile(Shark* shark, FILE* file) {
 
-    fprintf(file, "%d,%d,%d,%d,%s,%.2f\n", shark->seaCreature.age, shark->seaCreature.lifeSpan, shark->seaCreature.colour1, shark->seaCreature.colour2, shark->name, shark->weight);
+    fprintf(file, "%s,%d,%d,%d,%d,%.2f\n", shark->name, shark->seaCreature.age, shark->seaCreature.lifeSpan, shark->seaCreature.color1, shark->seaCreature.color2, shark->weight);
 }
 
 Shark* readSharkFromFile(FILE* file) {
@@ -77,7 +75,7 @@ Shark* readSharkFromFile(FILE* file) {
         printf("Memory allocation failed\n");
         return NULL;
     }
-    if (fscanf(file, "%d,%d,%d,%d,%49[^,],%lf\n", &shark->seaCreature.age, &shark->seaCreature.lifeSpan, (int*)&shark->seaCreature.colour1, (int*)&shark->seaCreature.colour2, shark->name, &shark->weight) != 6) {
+    if (fscanf(file, "%d,%d,%d,%d,%49[^,],%lf\n", &shark->seaCreature.age, &shark->seaCreature.lifeSpan, (int*)&shark->seaCreature.color1, (int*)&shark->seaCreature.color2, shark->name, &shark->weight) != 6) {
         printf("Error reading from file\n");
         free(shark);
         return NULL;
@@ -93,8 +91,8 @@ void writeSharkToBinaryFile(Shark* shark, FILE* file) {
     // Write the Shark structure to the file
     fwrite(&shark->seaCreature.age, sizeof(int), 1, file);
     fwrite(&shark->seaCreature.lifeSpan, sizeof(int), 1, file);
-    fwrite(&shark->seaCreature.colour1, sizeof(int), 1, file);
-    fwrite(&shark->seaCreature.colour2, sizeof(int), 1, file);
+    fwrite(&shark->seaCreature.color1, sizeof(int), 1, file);
+    fwrite(&shark->seaCreature.color2, sizeof(int), 1, file);
     int nameLength = strlen(shark->name);
     fwrite(&nameLength, sizeof(int), 1, file);
     fwrite(shark->name, sizeof(char), nameLength, file);
@@ -116,8 +114,8 @@ Shark* readSharkFromBinaryFile(FILE* file) {
 
     fread(&shark->seaCreature.age, sizeof(int), 1, file);
     fread(&shark->seaCreature.lifeSpan, sizeof(int), 1, file);
-    fread(&shark->seaCreature.colour1, sizeof(int), 1, file);
-    fread(&shark->seaCreature.colour2, sizeof(int), 1, file);
+    fread(&shark->seaCreature.color1, sizeof(int), 1, file);
+    fread(&shark->seaCreature.color2, sizeof(int), 1, file);
     int nameLength;
     fread(&nameLength, sizeof(int), 1, file);
     fread(shark->name, sizeof(char), nameLength, file);
