@@ -9,11 +9,12 @@ typedef struct {
     char name[50];
 } ClownFish;
 
-void initClownFish(ClownFish* clownFish);
-void printClownFish(const ClownFish* clownFish);
+
+
+void getClownFishFromUser(ClownFish* fish);
 void writeClownFishToFile(ClownFish* fish, FILE* file);
 ClownFish* readClownFishFromFile(FILE* file);
-ClownFish* createClownFish(const char* name, int age, int lifeSpan, eSeaCreatureColour color1, eSeaCreatureColour color2);
+ClownFish* createClownFish(const char* name, int age, int lifeSpan, eSeaCreatureColor color1, eSeaCreatureColor color2);
 void writeClownFishToBinaryFile(ClownFish* fish, FILE* file);
 ClownFish* readClownFishFromBinaryFile(FILE* file);
 #endif
