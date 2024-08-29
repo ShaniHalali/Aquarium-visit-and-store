@@ -2,7 +2,7 @@
 #include"FreshFish.h"
 #include"Dolphin.h"
 #include "RandomFish.h"
-#include "ChildFish.h"
+
 
 
 typedef struct FreshAquarium {
@@ -14,7 +14,7 @@ typedef struct FreshAquarium {
 }FreshAquarium;
 
 FreshAquarium* initFreshAquarium();
-void addFreshFish(FreshAquarium* freshAquarium, FreshFish* freshFish1, FreshFish* freshFish2);
+void addFreshFish(FreshAquarium* freshAquarium, FreshFish* freshFish1);
 void addRandomFish(FreshAquarium* freshAquarium, RandomFish* freshFish);
 void insertDolphinLinkedList(FreshAquarium* aquarium, Dolphin* dolphin);
 void printAllFreshAquariums(const FreshAquarium* aquarium);
@@ -29,10 +29,12 @@ void readRandomFishesFromBinaryFile(FreshAquarium* fresh, FILE* file);
 FreshAquarium* readFreshAquariumFromFile(FILE* fp);
 void writeDolphinListToTxtFile(Dolphin* head, FILE* file);
 void writeDolphinListToBinaryFile(Dolphin* head, FILE* file);
+
 void writeFreshFishesToBinaryFile(FreshFish** frehFishes, int size, FILE* fp);
 void writeFreshFishesToTxtFile(FreshFish** frehFishes, int size, FILE* fp);
 void readFreshFishesFromBinaryFile(FreshAquarium* freshAquarium, FILE* fp);
 void readFreshFishesFromFile(FreshAquarium* fresh, FILE* fp);
+
 void writeRandomFishesToFile(RandomFish** randomFish, int size, FILE* fp);
 void readRandomFishesFromFile(FreshAquarium* fresh, FILE* fp);
 void writeRandomFishesToBinaryFile(RandomFish** randomFish, int size, FILE* file);
