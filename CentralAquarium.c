@@ -90,11 +90,12 @@ CentralAquarium* readCentralAquariumFromTxtFile(char* fileName) {
 
 void printAllCentralAuqruaiumDetails(CentralAquarium* aquarium) {
 	printf("Name : %s \n", aquarium->name);
-	if (aquarium->saltAquarium != NULL) {
-		printAllSaltAquariums(aquarium->saltAquarium);
-	}
+	
 	if (aquarium->freshAquarium != NULL) {
 		printAllFreshAquariums(aquarium->freshAquarium);
+	}
+	if (aquarium->saltAquarium != NULL) {
+		printAllSaltAquariums(aquarium->saltAquarium);
 	}
 }
 
