@@ -31,6 +31,7 @@ void removeAndPrintChangesInDolphinsList(Dolphin** head);
 void friendshipValueRiseByOne(Dolphin* head);
 void friendshipValueDecreaseByRemovedDolphins(Dolphin** head, const int removedDolphinsCount);
 int readFriendshipIntegerFromUser();
+void searchDolphin(const Dolphin* head);
 
 //Files
 void writeDolphinToBinaryFile(Dolphin* dolphin, FILE* file);
