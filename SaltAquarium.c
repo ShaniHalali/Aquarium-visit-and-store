@@ -14,38 +14,47 @@ SaltAquarium* initSaltAquarium() {
 }
 
 void printAllSaltAquariums(const SaltAquarium* aquarium) {
-    printf("=== SaltAquarium Creatures ===\n");
+    printf("\n=== SaltAquarium Creatures ===\n\n");
+
     printf("--Sea creatures--\n");
-    if (aquarium->seaCreatures != NULL) {
-        for (int i = 0; i < aquarium->numSeaCreatures; i++) {
-            printSeaCreature(aquarium->seaCreatures[i]);
-        }
+    if (aquarium->seaCreatures != NULL && aquarium->numSeaCreatures > 0) {
+        //Using general function(void*).
+        printArr((const void**)aquarium->seaCreatures, aquarium->numSeaCreatures, (void (*)(const void*))printSeaCreature);
     }
     else {
-        printf("No sea creatures to display.\n");
-    }
-    printf("\n--Sharks--\n");
-    for (int i = 0; i < aquarium->numSeaCreatures; i++) {
-        printShark(aquarium->sharks[i]);
-    }
-    printf("\n--ClownFishes--\n");
-    for (int i = 0; i < aquarium->numSeaCreatures; i++) {
-        printClownFish(aquarium->clownFishes[i]);
+        printf("There are no Sea creatures...\n");
     }
 
+    printf("\n--Sharks--\n");
+    if (aquarium->sharks != NULL && aquarium->numSharks > 0) {
+        //Using general function(void*).
+        printArr((const void**)aquarium->sharks, aquarium->numSharks, (void (*)(const void*))printShark);
+    }
+    else {
+        printf("No sharks to display.\n");
+    }
+
+    printf("\n--Clown fishes--\n");
+    if (aquarium->clownFishes != NULL && aquarium->numClownFishes > 0) {
+        printArr((const void**)aquarium->clownFishes, aquarium->numClownFishes, (void (*)(const void*))printClownFish);
+    }
+    else {
+        printf("No Clown fish to display.\n");
+    }
 }
 
 //-------------------------------SeaCreatures------------------------------------//
 
-void addSeaCreature(SaltAquarium* saltAquarium, SeaCreature* seaCreature) {
-    saltAquarium->seaCreatures = (SeaCreature**)realloc(saltAquarium->seaCreatures, (saltAquarium->numSeaCreatures + 1) * sizeof(SeaCreature*));
-    if (!saltAquarium->seaCreatures) {
-        printf("Memory allocation failed for sea creatures\n");
+
+void addSeaCreature(SaltAquarium* saltAquarium, SeaCreature* newCreature) {
+    if (!saltAquarium || !newCreature) {
+        printf("Invalid aquarium or sea creature.\n");
         return;
     }
-    saltAquarium->seaCreatures[saltAquarium->numSeaCreatures++] = seaCreature;
+    saltAquarium->numSeaCreatures++;
+    saltAquarium->seaCreatures = (SeaCreature**)realloc(saltAquarium->seaCreatures, saltAquarium->numSeaCreatures * sizeof(SeaCreature*));
+    saltAquarium->seaCreatures[saltAquarium->numSeaCreatures - 1] = newCreature;
 }
-
 
 
 void ageAllSeaCreatures(SaltAquarium* aquarium) {
@@ -59,7 +68,6 @@ void ageAllSeaCreatures(SaltAquarium* aquarium) {
         }
         else {
             printf("\nSea creature at index %d has reached its maximum lifespan and has been removed.\n", i);
-            // Remove the sea creature at index i
             free(currentSeaCreature);
             for (int j = i; j < (aquarium->numSeaCreatures - 1); j++) {
                 aquarium->seaCreatures[j] = aquarium->seaCreatures[j + 1];
@@ -72,10 +80,15 @@ void ageAllSeaCreatures(SaltAquarium* aquarium) {
 //-------------------------------Sharks------------------------------------//
 
 void addShark(SaltAquarium* saltAquarium, Shark* shark) {
+    if (!saltAquarium || !shark) {
+        printf("Invalid aquarium or shark.\n");
+        return;
+    }
+
     Shark** temp = (Shark**)realloc(saltAquarium->sharks, (saltAquarium->numSharks + 1) * sizeof(Shark*));
     if (!temp) {
         printf("Memory allocation failed for sharks\n");
-        return; // Don't update the sharks pointer if realloc failed
+        return; // If realloc fails, do not update the pointer
     }
     saltAquarium->sharks = temp;
     saltAquarium->sharks[saltAquarium->numSharks++] = shark;
@@ -92,7 +105,7 @@ void ageAllSharks(SaltAquarium* aquarium) {
         }
         else {
             printf("\nShark %s has reached its maximum lifespan and has been removed.\n", currentShark->name);
-            // Remove the shark at index i
+
             free(currentShark);
             for (int j = i; j < (aquarium->numSharks - 1); j++) {
                 aquarium->sharks[j] = aquarium->sharks[j + 1];
@@ -123,16 +136,11 @@ Shark* findSharkByWeight(SaltAquarium* aquarium, double weight) {
     return NULL;
 }
 Shark* findSharkByName(SaltAquarium* aquarium, char* name) {
-    // Ensure the array is sorted by name
     qsort(aquarium->sharks, aquarium->numSharks, sizeof(Shark*), compareSharksName);
 
-    // Create a temporary shark object with the target name
     Shark* temp = createShark(name, 0, 0, 0, 0, 0);
 
-    // Perform binary search
     Shark** pShark = (Shark**)bsearch(&temp, aquarium->sharks, aquarium->numSharks, sizeof(Shark*), compareSharksName);
-
-    // Free the temporary object if dynamically allocated (depending on your implementation of createShark)
 
     if (pShark != NULL) {
         return *pShark;
@@ -239,12 +247,20 @@ void sharkSearchMenu(SaltAquarium* aquarium) {
 //-------------------------------ClownFish------------------------------------//
 
 void addClownFish(SaltAquarium* saltAquarium, ClownFish* clownFish) {
-    saltAquarium->clownFishes = (ClownFish**)realloc(saltAquarium->clownFishes, (saltAquarium->numClownFishes + 1) * sizeof(ClownFish*));
-    if (!saltAquarium->clownFishes) {
-        printf("Memory allocation failed for clownfishes\n");
+    if (!saltAquarium || !clownFish) {
+        printf("Invalid aquarium or clown fish.\n");
         return;
     }
-    saltAquarium->clownFishes[saltAquarium->numClownFishes++] = clownFish;
+
+    // Attempt to reallocate memory to accommodate the new clown fish
+    ClownFish** temp = (ClownFish**)realloc(saltAquarium->clownFishes, (saltAquarium->numClownFishes + 1) * sizeof(ClownFish*));
+    if (!temp) {
+        printf("Memory allocation failed for clown fishes\n");
+        return; // If realloc fails, do not update the pointer
+    }
+
+    saltAquarium->clownFishes = temp; // Update the pointer to the newly allocated memory
+    saltAquarium->clownFishes[saltAquarium->numClownFishes++] = clownFish; // Add the new clown fish to the array
 }
 
 
@@ -259,7 +275,7 @@ void ageAllClownFishes(SaltAquarium* aquarium) {
         }
         else {
             printf("\nClownfish %s has reached its maximum lifespan and has been removed.\n", currentClownFish->name);
-            // Remove the clownfish at index i
+
             free(currentClownFish);
             for (int j = i; j < (aquarium->numClownFishes - 1); j++) {
                 aquarium->clownFishes[j] = aquarium->clownFishes[j + 1];
@@ -269,9 +285,7 @@ void ageAllClownFishes(SaltAquarium* aquarium) {
     }
 }
 
-
-
-
+//-------------------------------------------------------------------//
 
 void writeSaltAquariumToTxtFile(SaltAquarium* saltAquarium, FILE* fp) {
     fprintf(fp, "%d\n", saltAquarium->numSeaCreatures);
@@ -416,65 +430,70 @@ SaltAquarium* readSaltAquariumFromBinaryFile(FILE* file) {
     return salt;
 }
 void freeSaltAquarium(SaltAquarium* aquarium) {
+    //Using free general function(void*)
     if (aquarium != NULL) {
-        // Free Sharks
         if (aquarium->sharks != NULL) {
-            for (int i = 0; i < aquarium->numSharks; ++i) {
-                free(aquarium->sharks[i]);
-            }
-            free(aquarium->sharks);
+            freeArr((void**)aquarium->sharks, aquarium->numSharks, free);
         }
 
-        // Free ClownFishes
         if (aquarium->clownFishes != NULL) {
-            for (int i = 0; i < aquarium->numClownFishes; ++i) {
-                free(aquarium->clownFishes[i]);
-            }
-            free(aquarium->clownFishes);
+            freeArr((void**)aquarium->clownFishes, aquarium->numClownFishes, free);
         }
 
-
-
-        // Free SeaCreatures
         if (aquarium->seaCreatures != NULL) {
-            for (int i = 0; i < aquarium->numSeaCreatures; ++i) {
-                free(aquarium->seaCreatures[i]);
-            }
-            free(aquarium->seaCreatures);
+            freeArr((void**)aquarium->seaCreatures, aquarium->numSeaCreatures, free);
         }
 
-        // Free SaltAquarium itself
         free(aquarium);
     }
 }
 
-
+//-------------------------------Printings------------------------------------//
 void printSeaCreature(const void* creature) {
     const SeaCreature* seaCreature = (const SeaCreature*)creature;
+
+    if (seaCreature == NULL) {
+        printf("Error: Null sea creature pointer passed to printSeaCreature.\n");
+        return;
+    }
+
     printf("Age : {%d} , Life Span : {%d} , Color 1 : {%s} , Color 2 : {%s}\n",
         seaCreature->age,
         seaCreature->lifeSpan,
-        (seaCreature->colour1 >= 0 && seaCreature->colour1 < eNofSeaCreatureColours) ? SeaCreatureColour[seaCreature->colour1] : "Unknown",
-        (seaCreature->colour2 >= 0 && seaCreature->colour2 < eNofSeaCreatureColours) ? SeaCreatureColour[seaCreature->colour2] : "Unknown");
+        (seaCreature->color1 >= 0 && seaCreature->color1 < eNofSeaCreatureColors) ? SeaCreatureColour[seaCreature->color1] : "Unknown",
+        (seaCreature->color2 >= 0 && seaCreature->color2 < eNofSeaCreatureColors) ? SeaCreatureColour[seaCreature->color2] : "Unknown");
 }
 
 void printShark(const void* shark) {
     const Shark* sharkObj = (const Shark*)shark;
+
+    if (sharkObj == NULL) {
+        printf("Error: Null shark pointer passed to printShark.\n");
+        return;
+    }
+
     printf("Name : {%s} , Age : {%d} , Life Span : {%d} , Color 1 : {%s} , Color 2 : {%s} , Weight : {%.2lf}\n",
         sharkObj->name,
         sharkObj->seaCreature.age,
         sharkObj->seaCreature.lifeSpan,
-        (sharkObj->seaCreature.colour1 >= 0 && sharkObj->seaCreature.colour1 < eNofSeaCreatureColours) ? SeaCreatureColour[sharkObj->seaCreature.colour1] : "Unknown",
-        (sharkObj->seaCreature.colour2 >= 0 && sharkObj->seaCreature.colour2 < eNofSeaCreatureColours) ? SeaCreatureColour[sharkObj->seaCreature.colour2] : "Unknown",
-        sharkObj->weight);  // "%.2lf" limits the weight to 2 decimal places
+        (sharkObj->seaCreature.color1 >= 0 && sharkObj->seaCreature.color1 < eNofSeaCreatureColors) ? SeaCreatureColour[sharkObj->seaCreature.color1] : "Unknown",
+        (sharkObj->seaCreature.color2 >= 0 && sharkObj->seaCreature.color2 < eNofSeaCreatureColors) ? SeaCreatureColour[sharkObj->seaCreature.color2] : "Unknown",
+        sharkObj->weight);
 }
+
 
 void printClownFish(const void* clownFish) {
     const ClownFish* clownFishObj = (const ClownFish*)clownFish;
+
+    if (clownFishObj == NULL) {
+        printf("Error: Null clown fish pointer passed to printClownFish.\n");
+        return;
+    }
+
     printf("Name : {%s} , Age : {%d} , Life Span : {%d} , Color 1 : {%s} , Color 2 : {%s}\n",
         clownFishObj->name,
         clownFishObj->seaCreature.age,
         clownFishObj->seaCreature.lifeSpan,
-        (clownFishObj->seaCreature.colour1 >= 0 && clownFishObj->seaCreature.colour1 < eNofSeaCreatureColours) ? SeaCreatureColour[clownFishObj->seaCreature.colour1] : "Unknown",
-        (clownFishObj->seaCreature.colour2 >= 0 && clownFishObj->seaCreature.colour2 < eNofSeaCreatureColours) ? SeaCreatureColour[clownFishObj->seaCreature.colour2] : "Unknown");
+        (clownFishObj->seaCreature.color1 >= 0 && clownFishObj->seaCreature.color1 < eNofSeaCreatureColors) ? SeaCreatureColour[clownFishObj->seaCreature.color1] : "Unknown",
+        (clownFishObj->seaCreature.color2 >= 0 && clownFishObj->seaCreature.color2 < eNofSeaCreatureColors) ? SeaCreatureColour[clownFishObj->seaCreature.color2] : "Unknown");
 }
