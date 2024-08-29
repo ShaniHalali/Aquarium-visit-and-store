@@ -164,7 +164,8 @@ void writeDolphinToFile(Dolphin* dolphin, FILE* file) {
         printf("Invalid input parameters!\n");
         return;
     }
-    fprintf(file, "%d,%.2f,%c\n", dolphin->friendshipValue, dolphin->length, dolphin->nameByChar);
+  //  fprintf(file, "%d,%.2f,%c\n", dolphin->friendshipValue, dolphin->length, dolphin->nameByChar);
+    fprintf(file, "%c,%d,%.2f\n", dolphin->nameByChar,dolphin->friendshipValue, dolphin->length );
 }
 
 Dolphin* readDolphinFromFile(FILE* file) {
@@ -266,4 +267,19 @@ int readFriendshipIntegerFromUser() {
         while (getchar() != '\n'); // Clear input buffer
     }
     return value;
+}
+
+void searchDolphin(const Dolphin* head)
+{
+    clearInputBuffer();
+    char tav;
+    printf("Please enter one Char\n");
+    scanf("%c", &tav);
+    Dolphin* result = searchDolphinByName(tav, head);
+    if (result == NULL) {
+        printf("No dolphin found\n");
+    }
+    else {
+        printDolphin(result);
+    }
 }
