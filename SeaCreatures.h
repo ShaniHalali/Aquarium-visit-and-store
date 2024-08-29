@@ -5,29 +5,28 @@
 
 
 typedef enum {
-	eDarkGreen, ePink, eAzuleBlue, eOrange, eDarkBlue, eDarkYellow, eNofSeaCreatureColours
-} eSeaCreatureColour;
+	eDarkGreen, ePink, eAzuleBlue, eOrange, eDarkBlue, eDarkYellow, eNofSeaCreatureColors
+} eSeaCreatureColor;
 
 
-static const char* SeaCreatureColour[eNofSeaCreatureColours]
+static const char* SeaCreatureColour[eNofSeaCreatureColors]
 = { "Dark Green", "Pink", "Azule Blue","Orange", "Dark Blue", "Dark Yellow" };
 
 typedef struct
 {
 	int age;
 	int lifeSpan;
-	eSeaCreatureColour colour1;
-	eSeaCreatureColour colour2;
+	eSeaCreatureColor color1;
+	eSeaCreatureColor color2;
 
 }SeaCreature;
 
 
 
-eSeaCreatureColour	getColourFromUser();
-void getColoursForSeaCreature(SeaCreature* pPer);
-void getSeaCreatureFromUser(SeaCreature* pPer);
-void printSeaCreature(const SeaCreature* pPer);
-SeaCreature* createSeaCreature(int age, int lifeSpan, eSeaCreatureColour color1, eSeaCreatureColour color2);
+eSeaCreatureColor getValidColour(const char* prompt);
+void getValidColours(SeaCreature* creature);
+SeaCreature* getSeaCreatureFromUser();
+SeaCreature* createSeaCreature(int age, int lifeSpan, eSeaCreatureColor color1, eSeaCreatureColor color2);
 void writeSeaCreatureToFile(SeaCreature* seaCreature, FILE* file);
 SeaCreature* readSeaCreatureFromFile(FILE* file);
 void writeSeaCreatureToBinFile(SeaCreature* seaCreature, FILE* file);
