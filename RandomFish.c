@@ -38,12 +38,37 @@ RandomFish* createRandomFish() {
     return result;
 }
 
-// Function to write RandomFish to a text file
+ //Function to write RandomFish to a text file
+//void writeRandomFish(RandomFish* random, FILE* file) {
+//    fprintf(file, "%d,%d,%d,%lld\n", random->age, random->pattern, random->color,random->extraInfo);
+//}
+
 void writeRandomFish(RandomFish* random, FILE* file) {
-    fprintf(file, "%d,%d,%d\n", random->age, random->pattern, random->color);
+    
+    FishTimestamp* timestamp = (FishTimestamp*)random->extraInfo;
+
+    if (timestamp != NULL) {
+        fprintf(file, "%d,%d,%d,%lld\n", random->age, random->pattern, random->color, (long long int)timestamp->timestamp);
+    }
+    else {
+        fprintf(file, "%d,%d,%d,%s\n", random->age, random->pattern, random->color, "No timestamp");
+    }
 }
 
 // Function to read RandomFish from a text file
+//RandomFish* readRandomFishFromFile(FILE* fp) {
+//    RandomFish* random = (RandomFish*)calloc(1, sizeof(RandomFish));
+//    if (random == NULL) {
+//        printf("Memory allocation failed\n");
+//        return NULL;
+//    }
+//
+//    if (fscanf(fp, "%d,%d,%d\n", &random->age, (int*)&random->pattern, (int*)&random->color) != 3) {
+//        free(random);
+//        return NULL;
+//    }
+//    return random;
+//}
 RandomFish* readRandomFishFromFile(FILE* fp) {
     RandomFish* random = (RandomFish*)calloc(1, sizeof(RandomFish));
     if (random == NULL) {
@@ -51,12 +76,30 @@ RandomFish* readRandomFishFromFile(FILE* fp) {
         return NULL;
     }
 
-    if (fscanf(fp, "%d,%d,%d\n", &random->age, (int*)&random->pattern, (int*)&random->color) != 3) {
+    long long timestamp_value;
+    if (fscanf(fp, "%d,%d,%d,%lld\n", &random->age, (int*)&random->pattern, (int*)&random->color, &timestamp_value) != 4) {
         free(random);
         return NULL;
     }
+
+    // Allocate and assign the timestamp if it's not zero
+    if (timestamp_value != 0) {
+        FishTimestamp* timestamp = (FishTimestamp*)malloc(sizeof(FishTimestamp));
+        if (timestamp != NULL) {
+            timestamp->timestamp = (time_t)timestamp_value;
+            random->extraInfo = timestamp;
+        }
+        else {
+            random->extraInfo = NULL;
+        }
+    }
+    else {
+        random->extraInfo = NULL;
+    }
+
     return random;
 }
+
 
 // Function to write RandomFish to a binary file
 void writeRandomFishToBinaryFile(RandomFish* random, FILE* file) {
