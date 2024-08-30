@@ -101,16 +101,21 @@ void readDolphinListFromFile(FreshAquarium* fresh, FILE* fp) {
         printf("Invalid file!\n");
         return;
     }
+
     int numDolphins;
     if (fscanf(fp, "%d\n", &numDolphins) != 1) {
         printf("Failed to read the number of dolphins from the file!\n");
         return;
     }
+
     for (int i = 0; i < numDolphins; i++) {
         Dolphin* dp = readDolphinFromFile(fp);
-        insertDolphinLinkedList(fresh, dp);
+        if (dp != NULL) {
+            insertDolphinLinkedList(fresh, dp);
+        }
     }
 }
+
 
 void writeDolphinListToBinaryFile(Dolphin* head, FILE* file) {
     if (head == NULL) {
@@ -131,26 +136,7 @@ void writeDolphinListToBinaryFile(Dolphin* head, FILE* file) {
         current = current->next;
     }
 }
-//
-//void writeDolphinListToTxtFile(Dolphin* head, FILE* file) {
-//    if (head == NULL) {
-//        int count = 0;
-//        fwrite(&count, sizeof(int), 1, file);
-//        return;
-//    }
-//    int count = 0;
-//    Dolphin* current = head;
-//    while (current != NULL) {
-//        count++;
-//        current = current->next;
-//    }
-//    fprintf(file, "%d\n", count); // num of dolphins
-//    current = head;
-//    while (current != NULL) {
-//        writeDolphinToFile(current, file);
-//        current = current->next;
-//    }
-//}
+
 
 void writeDolphinListToTxtFile(Dolphin* head, FILE* file) {
     if (file == NULL) {
@@ -207,23 +193,37 @@ void readFreshFishesFromBinaryFile(FreshAquarium* freshAquarium, FILE* fp) {
 }
 
 void readFreshFishesFromFile(FreshAquarium* freshAquarium, FILE* fp) {
+   
+    if (fp == NULL) 
+    {
+        printf("invalid file!\n");
+        return;
+    }
     int numOfFreshFishes;
-    fread(&numOfFreshFishes, sizeof(int), 1, fp);
-    for (int i = 0; i < numOfFreshFishes; i++) {
+    if (fscanf(fp, "%d\n", &numOfFreshFishes) != 1) 
+    {
+        printf("Faild to read number of Fresh Fishes from the file! \n");
+        return;
+    }
+    for (int i = 0; i < numOfFreshFishes; i++)
+    {
         FreshFish* freshFish = readFreshFishFromFile(fp);
         addFreshFish(freshAquarium, freshFish);
     }
+
 }
 
 void printAllFreshAquariums(const FreshAquarium* aquarium) {
     printf("\n=== Fresh Creatures ===\n\n");
     printf("--Dolphin List--\n");
     printDolphinList(aquarium->dolphinLinkedList);
-    printf("--Random Fishes--\n");
+
+    printf("\n--Fresh Fishes--\n");
+    printAllFreshFishes(aquarium);
+
+    printf("\n--Random Fishes--\n");
     //Using general function(void*).
     printArr(aquarium->randomFish, aquarium->sizeOfRandomFish, printRandomFish);
-    printf("--Fresh Fishes--\n");
-    printAllFreshFishes(aquarium);
 }
 
 void printAllFreshFishes(const FreshAquarium* aquarium) {
@@ -264,11 +264,12 @@ void addRandomFish(FreshAquarium* freshAquarium, RandomFish* randomFish) {
     }
     freshAquarium->randomFish[freshAquarium->sizeOfRandomFish++] = randomFish;
 }
-
 void insertDolphinLinkedList(FreshAquarium* aquarium, Dolphin* dolphin) {
     Dolphin* head = aquarium->dolphinLinkedList;
     if (head == NULL) {
         aquarium->dolphinLinkedList = dolphin;
+        dolphin->next = NULL;
+        dolphin->prev = NULL;
     }
     else {
         Dolphin* temp = head;
@@ -276,6 +277,8 @@ void insertDolphinLinkedList(FreshAquarium* aquarium, Dolphin* dolphin) {
             temp = temp->next;
         }
         temp->next = dolphin;
+        dolphin->prev = temp; // Set the previous pointer
+        dolphin->next = NULL; // Set the next pointer
     }
 }
 
