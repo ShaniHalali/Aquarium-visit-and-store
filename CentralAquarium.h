@@ -1,5 +1,6 @@
 #include "FreshAquarium.h"
 #include "SaltAquarium.h"
+#define MAX_NAME_LENGTH 255
 
 typedef struct CentralAquarium {
 
