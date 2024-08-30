@@ -22,7 +22,7 @@ void printAllSaltAquariums(const SaltAquarium* aquarium) {
         printArr((const void**)aquarium->seaCreatures, aquarium->numSeaCreatures, (void (*)(const void*))printSeaCreature);
     }
     else {
-        printf("There are no Sea creatures...\n");
+        printf("No Sea creatures to display\n");
     }
 
     printf("\n--Sharks--\n");
@@ -45,16 +45,35 @@ void printAllSaltAquariums(const SaltAquarium* aquarium) {
 
 //-------------------------------SeaCreatures------------------------------------//
 
-
+//
+//void addSeaCreature(SaltAquarium* saltAquarium, SeaCreature* newCreature) {
+//    if (!saltAquarium || !newCreature) {
+//        printf("Invalid aquarium or sea creature.\n");
+//        return;
+//    }
+//    saltAquarium->numSeaCreatures++;
+//    saltAquarium->seaCreatures = (SeaCreature**)realloc(saltAquarium->seaCreatures, saltAquarium->numSeaCreatures * sizeof(SeaCreature*));
+//    saltAquarium->seaCreatures[saltAquarium->numSeaCreatures - 1] = newCreature;
+//}
 void addSeaCreature(SaltAquarium* saltAquarium, SeaCreature* newCreature) {
     if (!saltAquarium || !newCreature) {
         printf("Invalid aquarium or sea creature.\n");
         return;
     }
+    if (saltAquarium->seaCreatures == NULL) {
+        saltAquarium->seaCreatures = (SeaCreature**)malloc(sizeof(SeaCreature*));
+    }
+    else {
+        saltAquarium->seaCreatures = (SeaCreature**)realloc(saltAquarium->seaCreatures, saltAquarium->numSeaCreatures * sizeof(SeaCreature*));
+    }
+    if (saltAquarium->seaCreatures == NULL) {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+    saltAquarium->seaCreatures[saltAquarium->numSeaCreatures] = newCreature;
     saltAquarium->numSeaCreatures++;
-    saltAquarium->seaCreatures = (SeaCreature**)realloc(saltAquarium->seaCreatures, saltAquarium->numSeaCreatures * sizeof(SeaCreature*));
-    saltAquarium->seaCreatures[saltAquarium->numSeaCreatures - 1] = newCreature;
 }
+
 
 
 void ageAllSeaCreatures(SaltAquarium* aquarium) {
@@ -350,11 +369,6 @@ SaltAquarium* readSaltAquariumFromFile(FILE* fp) {
         Shark* seaCreature = readSharkFromFile(fp);
         addShark(salt, seaCreature);
     }
-    int numOfCorals;
-    if (fscanf(fp, "%d\n", &numOfCorals) != 1) {
-        return NULL;
-    }
-
 
     int numOfClownFishes;
     if (fscanf(fp, "%d\n", &numOfClownFishes) != 1) {
