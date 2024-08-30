@@ -164,10 +164,8 @@ void writeDolphinToFile(Dolphin* dolphin, FILE* file) {
         printf("Invalid input parameters!\n");
         return;
     }
-  //  fprintf(file, "%d,%.2f,%c\n", dolphin->friendshipValue, dolphin->length, dolphin->nameByChar);
     fprintf(file, "%c,%d,%.2f\n", dolphin->nameByChar,dolphin->friendshipValue, dolphin->length );
 }
-
 Dolphin* readDolphinFromFile(FILE* file) {
     if (file == NULL) {
         printf("Invalid file!\n");
@@ -180,7 +178,8 @@ Dolphin* readDolphinFromFile(FILE* file) {
         return NULL;
     }
 
-    if (fscanf(file, "%d,%lf,%c ", &dolphin->friendshipValue, &dolphin->length, &dolphin->nameByChar) != 3) {
+    // Read dolphin data from file
+    if (fscanf(file, " %c,%d,%lf", &dolphin->nameByChar, &dolphin->friendshipValue, &dolphin->length) != 3) {
         printf("Failed to read Dolphin details from file!\n");
         free(dolphin);
         return NULL;
@@ -190,6 +189,7 @@ Dolphin* readDolphinFromFile(FILE* file) {
     dolphin->prev = NULL;
     return dolphin;
 }
+
 
 Dolphin* readDolphinFromBinFile(FILE* file) {
     if (file == NULL) {
