@@ -106,14 +106,45 @@ FreshFish* readFreshFishFromBinaryFile(FILE* file) {
     fread(fish->name, sizeof(char), nameLength, file);
     return fish;
 }
-
+//
+//FreshFish* readFreshFishFromFile(FILE* file) {
+//    FreshFish* fish = (FreshFish*)malloc(sizeof(FreshFish));
+//    if (fish == NULL) {
+//        return NULL;
+//    }
+//    char name[100];
+//    fscanf(file, "%s,%d,%d\n",  name, &fish->age, &fish->lifeSpan);
+//    fish->name = strdup(name);
+//    return fish;
+//}
 FreshFish* readFreshFishFromFile(FILE* file) {
-    FreshFish* fish = (FreshFish*)malloc(sizeof(FreshFish));
-    if (fish == NULL) {
+    if (file == NULL) {
+        printf("Invalid file pointer!\n");
         return NULL;
     }
+
+    FreshFish* fish = (FreshFish*)malloc(sizeof(FreshFish));
+    if (fish == NULL) {
+        printf("Memory allocation failed!\n");
+        return NULL;
+    }
+
     char name[100];
-    fscanf(file, "%d,%d,%s\n", &fish->age, &fish->lifeSpan, name);
+    // Try to read the data from the file
+    int result = fscanf(file, "%99[^,],%d,%d\n", name, &fish->age, &fish->lifeSpan);
+    if (result != 3) {
+        printf("Failed to read FreshFish details from file!\n");
+        free(fish);
+        return NULL;
+    }
+
+    // Allocate memory for name and copy the read name
     fish->name = strdup(name);
+    if (fish->name == NULL) {
+        printf("Memory allocation for name failed!\n");
+        free(fish);
+        return NULL;
+    }
+
     return fish;
 }
