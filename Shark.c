@@ -75,7 +75,7 @@ Shark* readSharkFromFile(FILE* file) {
         printf("Memory allocation failed\n");
         return NULL;
     }
-    if (fscanf(file, "%d,%d,%d,%d,%49[^,],%lf\n", &shark->seaCreature.age, &shark->seaCreature.lifeSpan, (int*)&shark->seaCreature.color1, (int*)&shark->seaCreature.color2, shark->name, &shark->weight) != 6) {
+    if (fscanf(file, "%49[^,],%d,%d,%d,%d,%lf\n", shark->name, &shark->seaCreature.age, &shark->seaCreature.lifeSpan, (int*)&shark->seaCreature.color1, (int*)&shark->seaCreature.color2, &shark->weight) != 6) {
         printf("Error reading from file\n");
         free(shark);
         return NULL;
