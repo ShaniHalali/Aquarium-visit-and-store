@@ -40,7 +40,7 @@ ClownFish* createClownFish(const char* name, int age, int lifeSpan, eSeaCreature
 
 void writeClownFishToFile(ClownFish* fish, FILE* file) {
 
-    fprintf(file, "%d,%d,%d,%d,%s\n", fish->seaCreature.age, fish->seaCreature.lifeSpan, fish->seaCreature.color1, fish->seaCreature.color2, fish->name);
+    fprintf(file, "%s,%d,%d,%d,%d\n",  fish->name,fish->seaCreature.age, fish->seaCreature.lifeSpan, fish->seaCreature.color1, fish->seaCreature.color2);
 }
 
 ClownFish* readClownFishFromFile(FILE* file) {
@@ -50,7 +50,7 @@ ClownFish* readClownFishFromFile(FILE* file) {
         printf("Memory allocation failed\n");
         return NULL;
     }
-    if (fscanf(file, "%d,%d,%d,%d,%49[^,]\n", &clownFish->seaCreature.age, &clownFish->seaCreature.lifeSpan, (int*)&clownFish->seaCreature.color1, (int*)&clownFish->seaCreature.color2, clownFish->name) != 5) {
+    if (fscanf(file, "%49[^,],%d,%d,%d,%d\n",  clownFish->name, &clownFish->seaCreature.age, &clownFish->seaCreature.lifeSpan, (int*)&clownFish->seaCreature.color1, (int*)&clownFish->seaCreature.color2) != 5) {
 
     }
     return clownFish;
